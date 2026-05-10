@@ -1985,13 +1985,23 @@ function parseRecetasCSV(csv) {
     if (!titulo) continue;
     if (/^titulo|^título|título del/i.test(titulo)) continue;
     if (titulo.startsWith('(') || titulo.includes('(ej:')) continue;
+    // Saltar filas de instrucciones para Natalia (numeradas, con emojis, palabras clave)
+    if (/^[\d]+[.)]\s/.test(titulo)) continue;
+    if (/^(instrucciones|nota|importante|tip|aviso)/i.test(titulo)) continue;
+    if (/^[📝⚠️📋💡🎨ℹ️]/u.test(titulo)) continue;
+    // Solo recetas reales: deben tener categoria Y (extracto o contenido)
+    const categoria = (r.categoria || r['categoría'] || '').trim();
+    const extracto = (r.extracto || r.descripcion || r['descripción'] || '').trim();
+    const contenido = (r.contenido || r.texto || '').trim();
+    if (!categoria) continue;
+    if (!extracto && !contenido) continue;
     const visibleVal = (r.visible || '').toString().toUpperCase().trim();
     if (['NO', 'FALSE', '0', 'OCULTO'].includes(visibleVal)) continue;
     recetas.push({
       titulo,
-      categoria: r.categoria || r['categoría'] || 'Tip',
-      extracto: r.extracto || r.descripcion || r['descripción'] || '',
-      contenido: r.contenido || r.texto || '',
+      categoria,
+      extracto,
+      contenido,
       imagen_url: r.imagen_url || r.imagen || ''
     });
   }
