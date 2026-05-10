@@ -1304,6 +1304,9 @@ function parseCSV(csv) {
     if (!nombre) continue;
     if (/^nombre del producto/i.test(nombre)) continue;
     if (nombre.startsWith('(') || nombre.includes('(ej:')) continue;
+    // Solo productos reales: deben tener precio numerico (filtra filas de instrucciones)
+    const precioNum = parseFloat((p.precio || '').toString().replace(/[^\d.,]/g, '').replace(',', '.'));
+    if (!precioNum || isNaN(precioNum)) continue;
 
     const visibleVal = (p.visible || '').toString().toUpperCase().trim();
     const oculto = ['NO', 'FALSE', '0', 'OCULTO'].includes(visibleVal);
@@ -1313,13 +1316,14 @@ function parseCSV(csv) {
 }
 
 // Convierte URL de Google Drive a URL directa para mostrar como imagen
+// Usa el endpoint de thumbnail que es mas confiable que uc?export=view
 function driveToDirectURL(url) {
   if (!url) return null;
   url = url.trim();
   if (!url) return null;
   const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) ||
                 url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-  if (match) return `https://drive.google.com/uc?export=view&id=${match[1]}`;
+  if (match) return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w800`;
   if (url.startsWith('http')) return url;
   return null;
 }
