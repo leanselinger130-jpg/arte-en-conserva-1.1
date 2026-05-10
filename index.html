@@ -1056,6 +1056,196 @@
     .cart-toggle .cart-label { display: none; }
     .cart-drawer { width: 100%; }
   }
+
+  /* ── BUTTON SUCCESS STATE ── */
+  .btn-add-cart.added {
+    background: var(--terracota);
+    pointer-events: none;
+  }
+  .btn-add-cart.added .btn-text-default { display: none; }
+  .btn-add-cart .btn-text-success { display: none; }
+  .btn-add-cart.added .btn-text-success { display: inline; }
+  .btn-add-cart.added svg { animation: checkPop 0.4s ease-out; }
+  @keyframes checkPop {
+    0% { transform: scale(0.5) rotate(-20deg); opacity: 0; }
+    60% { transform: scale(1.2) rotate(5deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+
+  /* ── CART COUNT PULSE ── */
+  .cart-count.pulse {
+    animation: countPulse 0.5s ease-out;
+  }
+  @keyframes countPulse {
+    0% { transform: scale(1); background: var(--terracota); }
+    40% { transform: scale(1.4); background: var(--verde); }
+    100% { transform: scale(1); background: var(--terracota); }
+  }
+
+  /* ── TOAST ── */
+  .toast-container {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 300;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    pointer-events: none;
+  }
+  .toast {
+    background: var(--verde-dark);
+    color: var(--beige);
+    padding: 0.9rem 1.4rem;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    box-shadow: 0 10px 30px rgba(44,31,20,0.25);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s, transform 0.3s;
+    border-left: 3px solid var(--beige);
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.removed { background: var(--marron); }
+  .toast svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+  /* ── SKELETON LOADER ── */
+  .skeleton-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .skeleton-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 1px solid rgba(90,107,77,0.15);
+    overflow: hidden;
+    min-height: 520px;
+  }
+  .skeleton-card:nth-child(even) { grid-template-columns: 1fr 1fr; }
+  .skeleton-visual {
+    background: linear-gradient(110deg, var(--beige) 30%, var(--beige-dark) 50%, var(--beige) 70%);
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.6s infinite;
+  }
+  .skeleton-content {
+    padding: 3.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background: white;
+  }
+  .skeleton-line {
+    background: linear-gradient(110deg, var(--beige) 30%, var(--beige-dark) 50%, var(--beige) 70%);
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.6s infinite;
+    height: 14px;
+    border-radius: 2px;
+  }
+  .skeleton-line.title { height: 38px; width: 70%; }
+  .skeleton-line.short { width: 30%; }
+  .skeleton-line.medium { width: 60%; }
+  @keyframes skeletonShimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  @media (max-width: 768px) {
+    .skeleton-card { grid-template-columns: 1fr; }
+    .skeleton-content { padding: 2rem; }
+  }
+
+  /* ── CART EMPTY STATE ── */
+  .cart-empty-rich {
+    text-align: center;
+    padding: 4rem 1.5rem;
+    color: var(--marron);
+  }
+  .cart-empty-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    border: 2px dashed var(--beige-dark);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--verde);
+  }
+  .cart-empty-icon svg { width: 40px; height: 40px; }
+  .cart-empty-rich h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--terracota);
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+  }
+  .cart-empty-rich p {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+  .cart-empty-rich button {
+    background: transparent;
+    border: 1.5px solid var(--verde);
+    color: var(--verde-dark);
+    padding: 0.7rem 1.5rem;
+    font-family: 'Lato', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .cart-empty-rich button:hover { background: var(--verde); color: var(--beige); }
+
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 12, 6, 0.92);
+    z-index: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    padding: 2rem;
+  }
+  .lightbox.open { opacity: 1; pointer-events: auto; }
+  .lightbox img {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    transform: scale(0.9);
+    transition: transform 0.3s;
+  }
+  .lightbox.open img { transform: scale(1); }
+  .lightbox-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: none;
+    border: 1.5px solid var(--beige);
+    color: var(--beige);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .ficha-img { cursor: zoom-in; }
 </style>
 </head>
 <body>
@@ -1103,6 +1293,15 @@
   </div>
 </aside>
 
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" role="dialog" aria-hidden="true">
+  <button class="lightbox-close" id="lightbox-close" aria-label="Cerrar">&times;</button>
+  <img id="lightbox-img" alt="">
+</div>
+
 <!-- HERO -->
 <section class="hero">
   <div class="hero-left">
@@ -1138,7 +1337,30 @@
   </div>
 
   <div id="productos-container">
-    <div class="loading">Cargando productos...</div>
+    <div class="skeleton-grid">
+      <div class="skeleton-card">
+        <div class="skeleton-visual"></div>
+        <div class="skeleton-content">
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line title"></div>
+          <div class="skeleton-line medium"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line short"></div>
+        </div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton-content">
+          <div class="skeleton-line short"></div>
+          <div class="skeleton-line title"></div>
+          <div class="skeleton-line medium"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line"></div>
+          <div class="skeleton-line short"></div>
+        </div>
+        <div class="skeleton-visual"></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1420,22 +1642,6 @@ function createFichaHTML(p, index) {
               <span class="spec-value">${peso}</span>
             </div>
             <div class="spec-row">
-              <span class="spec-label">Origen</span>
-              <span class="spec-value">Berisso, Buenos Aires</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-label">Conservantes</span>
-              <span class="spec-value">Sin conservantes artificiales</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-label">Elaboración</span>
-              <span class="spec-value">Artesanal, cocción lenta</span>
-            </div>
-            <div class="spec-row">
-              <span class="spec-label">Envase</span>
-              <span class="spec-value">Frasco de vidrio, sellado al vacío</span>
-            </div>
-            <div class="spec-row">
               <span class="spec-label">Stock</span>
               <span class="spec-value ${disponible ? 'stock-disponible' : 'stock-agotado'}">${stockLabel}</span>
             </div>
@@ -1453,11 +1659,13 @@ function createFichaHTML(p, index) {
             <span class="precio-unit">${peso} — frasco de vidrio</span>
           </div>
           <button class="btn-add-cart" data-add-cart="${esc(nombre)}" data-precio="${esc(precio)}" data-peso="${esc(peso)}" ${disponible ? '' : 'disabled'}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
               <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+              <polyline points="20 6 9 17 4 12" class="check-path" style="display:none"/>
             </svg>
-            ${disponible ? 'Agregar al carrito' : 'Sin stock'}
+            <span class="btn-text-default">${disponible ? 'Agregar al carrito' : 'Sin stock'}</span>
+            <span class="btn-text-success">Agregado ✓</span>
           </button>
         </div>
       </div>
@@ -1484,7 +1692,7 @@ function saveCart() {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
 
-function addToCart(nombre, precio, peso) {
+function addToCart(nombre, precio, peso, btnEl) {
   const existing = cart.find(i => i.nombre === nombre);
   if (existing) {
     existing.cantidad += 1;
@@ -1492,14 +1700,37 @@ function addToCart(nombre, precio, peso) {
     cart.push({ nombre, precio: parseFloat(precio) || 0, peso, cantidad: 1 });
   }
   saveCart();
-  renderCart();
-  openCart();
+  renderCart(true);
+  showToast(`${nombre} agregado al carrito`);
+  if (btnEl) flashAddedState(btnEl);
+}
+
+function flashAddedState(btn) {
+  btn.classList.add('added');
+  setTimeout(() => btn.classList.remove('added'), 1400);
+}
+
+function showToast(msg, type = 'added') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = 'toast' + (type === 'removed' ? ' removed' : '');
+  const iconPath = type === 'removed'
+    ? '<path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>'
+    : '<polyline points="20 6 9 17 4 12"/>';
+  toast.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">${iconPath}</svg>${esc(msg)}`;
+  container.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('show'));
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 2400);
 }
 
 function removeFromCart(nombre) {
   cart = cart.filter(i => i.nombre !== nombre);
   saveCart();
   renderCart();
+  showToast(`${nombre} eliminado del carrito`, 'removed');
 }
 
 function updateQty(nombre, delta) {
@@ -1525,17 +1756,35 @@ function closeCart() {
   cartDrawer.setAttribute('aria-hidden', 'true');
 }
 
-function renderCart() {
+function renderCart(pulse = false) {
   const totalItems = cart.reduce((sum, i) => sum + i.cantidad, 0);
   const totalPrecio = cart.reduce((sum, i) => sum + (i.precio * i.cantidad), 0);
 
+  const prevCount = parseInt(cartCountEl.textContent) || 0;
   cartCountEl.textContent = totalItems;
   cartCountEl.classList.toggle('empty', totalItems === 0);
   cartTotalEl.textContent = '$' + totalPrecio.toLocaleString('es-AR');
   cartCheckoutBtn.disabled = cart.length === 0;
 
+  if (pulse && totalItems > prevCount) {
+    cartCountEl.classList.remove('pulse');
+    void cartCountEl.offsetWidth;
+    cartCountEl.classList.add('pulse');
+  }
+
   if (cart.length === 0) {
-    cartItemsEl.innerHTML = '<div class="cart-empty">Tu carrito está vacío.<br>Agregá productos para empezar.</div>';
+    cartItemsEl.innerHTML = `
+      <div class="cart-empty-rich">
+        <div class="cart-empty-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+        </div>
+        <h4>Tu carrito está vacío</h4>
+        <p>Agregá nuestras conservas artesanales<br>y armá tu pedido a medida.</p>
+        <button onclick="closeCart(); document.getElementById('productos').scrollIntoView({behavior:'smooth'})">Ver productos</button>
+      </div>`;
     return;
   }
 
@@ -1577,7 +1826,7 @@ cartCheckoutBtn.addEventListener('click', checkout);
 document.addEventListener('click', (e) => {
   const addBtn = e.target.closest('[data-add-cart]');
   if (addBtn && !addBtn.disabled) {
-    addToCart(addBtn.dataset.addCart, addBtn.dataset.precio, addBtn.dataset.peso);
+    addToCart(addBtn.dataset.addCart, addBtn.dataset.precio, addBtn.dataset.peso, addBtn);
     return;
   }
   const removeBtn = e.target.closest('[data-remove]');
@@ -1586,10 +1835,36 @@ document.addEventListener('click', (e) => {
   if (minusBtn) { updateQty(minusBtn.dataset.qtyMinus, -1); return; }
   const plusBtn = e.target.closest('[data-qty-plus]');
   if (plusBtn) { updateQty(plusBtn.dataset.qtyPlus, 1); return; }
+  const productImg = e.target.closest('.ficha-img');
+  if (productImg) { openLightbox(productImg.src, productImg.alt); return; }
+});
+
+// ── LIGHTBOX ──
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightbox-img');
+const lightboxClose = document.getElementById('lightbox-close');
+
+function openLightbox(src, alt) {
+  lightboxImg.src = src;
+  lightboxImg.alt = alt || '';
+  lightbox.classList.add('open');
+  lightbox.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  lightbox.classList.remove('open');
+  lightbox.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+lightboxClose.addEventListener('click', closeLightbox);
+lightbox.addEventListener('click', (e) => {
+  if (e.target === lightbox) closeLightbox();
 });
 
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && cartDrawer.classList.contains('open')) closeCart();
+  if (e.key !== 'Escape') return;
+  if (lightbox.classList.contains('open')) { closeLightbox(); return; }
+  if (cartDrawer.classList.contains('open')) closeCart();
 });
 
 renderCart();
