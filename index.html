@@ -832,7 +832,7 @@
   </div>
   <div class="hero-right">
     <div class="hero-jar-wrap">
-      <img class="hero-photo" src="images/Captura de pantalla 2026-05-09 020233.jpg" alt="Arte en Conserva — producto artesanal">
+      <img class="hero-photo" src="images/hero.jpg" alt="Arte en Conserva — producto artesanal">
     </div>
   </div>
 </section>
@@ -989,6 +989,10 @@ function parseCSV(csv) {
     headers.forEach((h, idx) => {
       p[h] = values[idx] !== undefined ? values[idx] : '';
     });
+    // normalizar claves a minúsculas para tolerar variaciones del header
+    const pNorm = {};
+    Object.keys(p).forEach(k => { pNorm[k.toLowerCase().trim()] = p[k]; });
+    Object.assign(p, pNorm);
     if (p.visible && p.visible.toUpperCase() === 'SI' && p.nombre) {
       productos.push(p);
     }
