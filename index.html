@@ -1283,7 +1283,10 @@ function parseCSV(csv) {
     const pNorm = {};
     Object.keys(p).forEach(k => { pNorm[k.toLowerCase().trim()] = p[k]; });
     Object.assign(p, pNorm);
-    if (p.visible && p.visible.toUpperCase() === 'SI' && p.nombre) {
+    // Por defecto visible, salvo que la columna 'visible' diga NO/FALSE/0
+    const visibleVal = (p.visible || '').toString().toUpperCase().trim();
+    const oculto = ['NO', 'FALSE', '0', 'OCULTO'].includes(visibleVal);
+    if (p.nombre && !oculto) {
       productos.push(p);
     }
   }
