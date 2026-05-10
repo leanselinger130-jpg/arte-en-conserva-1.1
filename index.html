@@ -339,6 +339,7 @@
     position: relative;
     overflow: hidden;
   }
+  .ficha-visual:hover .ficha-img { transform: scale(1.06); }
 
   .ficha-visual::before {
     content: '';
@@ -363,14 +364,13 @@
   }
 
   .ficha-img {
-    position: relative;
+    position: absolute;
+    inset: 0;
     z-index: 1;
-    width: 95%;
-    height: 95%;
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    filter: drop-shadow(0 20px 40px rgba(92,59,42,0.18));
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
   .ficha-badge-prod {
@@ -1246,6 +1246,222 @@
     line-height: 1;
   }
   .ficha-img { cursor: zoom-in; }
+
+  /* ── RECETARIO ── */
+  #recetario {
+    background: var(--beige);
+    padding: 7rem 2rem;
+    position: relative;
+  }
+  #recetario::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M40 0 L80 40 L40 80 L0 40 Z' fill='%235A6B4D' fill-opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .recetario-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .recetario-header {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 5rem;
+  }
+  .recetario-header p {
+    margin-top: 1rem;
+    color: var(--marron);
+    font-size: 1.02rem;
+    line-height: 1.7;
+  }
+  .recetas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+  }
+  .receta-card {
+    background: white;
+    border: 1px solid rgba(90,107,77,0.15);
+    cursor: pointer;
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .receta-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 50px rgba(92,59,42,0.15);
+  }
+  .receta-imagen {
+    width: 100%;
+    aspect-ratio: 16 / 11;
+    background: var(--beige-dark);
+    overflow: hidden;
+    position: relative;
+  }
+  .receta-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .receta-card:hover .receta-imagen img { transform: scale(1.08); }
+  .receta-imagen-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--verde-light), var(--verde-dark));
+    color: var(--beige);
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 2.4rem;
+    text-align: center;
+    padding: 1rem;
+  }
+  .receta-content {
+    padding: 1.6rem 1.8rem 1.8rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .receta-categoria {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--verde);
+    margin-bottom: 0.6rem;
+  }
+  .receta-titulo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--terracota);
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+  }
+  .receta-extracto {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-mid);
+    margin-bottom: 1.2rem;
+    flex: 1;
+  }
+  .receta-leer-mas {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--verde-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    align-self: flex-start;
+  }
+  .receta-leer-mas::after {
+    content: '→';
+    transition: transform 0.3s;
+  }
+  .receta-card:hover .receta-leer-mas::after { transform: translateX(4px); }
+
+  /* Recipe modal */
+  .receta-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 12, 6, 0.85);
+    backdrop-filter: blur(4px);
+    z-index: 350;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .receta-modal.open { opacity: 1; pointer-events: auto; }
+  .receta-modal-content {
+    background: var(--cream);
+    max-width: 720px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    transform: scale(0.95);
+    transition: transform 0.3s;
+  }
+  .receta-modal.open .receta-modal-content { transform: scale(1); }
+  .receta-modal-img {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    display: block;
+  }
+  .receta-modal-img-fallback {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--verde-light), var(--verde-dark));
+    color: var(--beige);
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 3rem;
+  }
+  .receta-modal-body { padding: 2.5rem 3rem 3rem; }
+  .receta-modal-cat {
+    font-family: 'Lato', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--verde);
+    margin-bottom: 0.8rem;
+  }
+  .receta-modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--terracota);
+    line-height: 1.15;
+    margin-bottom: 1.5rem;
+  }
+  .receta-modal-text {
+    font-size: 0.98rem;
+    line-height: 1.8;
+    color: var(--text-mid);
+    white-space: pre-line;
+  }
+  .receta-modal-text p { margin-bottom: 1rem; }
+  .receta-modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(255,255,255,0.92);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--terracota);
+    font-size: 1.4rem;
+    line-height: 1;
+    z-index: 2;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  @media (max-width: 768px) {
+    #recetario { padding: 4rem 1.5rem; }
+    .receta-modal { padding: 1rem; }
+    .receta-modal-body { padding: 1.5rem; }
+    .receta-modal-title { font-size: 1.5rem; }
+  }
 </style>
 </head>
 <body>
@@ -1258,6 +1474,7 @@
   </div>
   <ul class="nav-links">
     <li><a href="#productos">Productos</a></li>
+    <li><a href="#recetario">Recetario</a></li>
     <li><a href="#nosotros">Nosotros</a></li>
     <li><a href="#contacto">Contacto</a></li>
   </ul>
@@ -1300,6 +1517,13 @@
 <div class="lightbox" id="lightbox" role="dialog" aria-hidden="true">
   <button class="lightbox-close" id="lightbox-close" aria-label="Cerrar">&times;</button>
   <img id="lightbox-img" alt="">
+</div>
+
+<!-- RECIPE MODAL -->
+<div class="receta-modal" id="receta-modal" role="dialog" aria-hidden="true">
+  <div class="receta-modal-content" id="receta-modal-content">
+    <button class="receta-modal-close" id="receta-modal-close" aria-label="Cerrar">&times;</button>
+  </div>
 </div>
 
 <!-- HERO -->
@@ -1364,6 +1588,20 @@
   </div>
 </section>
 
+<!-- RECETARIO -->
+<section id="recetario">
+  <div class="recetario-inner">
+    <div class="recetario-header fade-up">
+      <span class="section-label">Recetario · Maridajes</span>
+      <h2 class="section-title">El sabor cobra vida<br>en tu mesa</h2>
+      <p>Sugerencias simples y combinaciones honestas para sacarle el máximo a cada conserva. Ideas que pasan de generación en generación.</p>
+    </div>
+    <div class="recetas-grid" id="recetas-grid">
+      <div class="loading">Cargando recetas...</div>
+    </div>
+  </div>
+</section>
+
 <!-- NOSOTROS -->
 <section id="nosotros">
   <div class="nosotros-inner">
@@ -1423,6 +1661,7 @@
       <div class="footer-col-title">Navegación</div>
       <ul class="footer-links">
         <li><a href="#productos">Productos</a></li>
+        <li><a href="#recetario">Recetario</a></li>
         <li><a href="#nosotros">Nosotros</a></li>
         <li><a href="#contacto">Contacto</a></li>
       </ul>
@@ -1453,6 +1692,37 @@ const observer = new IntersectionObserver((entries) => {
 document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSw3jbNRwP5AC0rKhciH0YoYhT2Xw0g_F8TY8Lddpl3-SAPnEkSPEX-0Y9VHn2C5A/pub?gid=93790561&single=true&output=csv';
+
+// Pega aca el gid de la pestaña "Recetario" cuando la crees en Google Sheets
+const RECETAS_GID = '';
+const RECETAS_CSV_URL = RECETAS_GID
+  ? `https://docs.google.com/spreadsheets/d/e/2PACX-1vSw3jbNRwP5AC0rKhciH0YoYhT2Xw0g_F8TY8Lddpl3-SAPnEkSPEX-0Y9VHn2C5A/pub?gid=${RECETAS_GID}&single=true&output=csv`
+  : null;
+
+// Recetas de fallback hasta que se configure la pestaña
+const RECETAS_FALLBACK = [
+  {
+    titulo: 'Mermelada de higos con queso de cabra',
+    categoria: 'Maridaje',
+    extracto: 'Una combinación clásica que despierta los sentidos. Lo dulce de los higos contra lo salado y cremoso del queso.',
+    contenido: 'Para una picada elegante o un aperitivo sin esfuerzo, untá rodajas de pan tostado con queso de cabra fresco y coroná con una cucharada generosa de nuestra Mermelada de Higos.\n\nDejá que el contraste haga su magia: lo dulce y meloso del higo se equilibra con la acidez láctica del queso. Acompañá con un vino tinto liviano (Pinot Noir o Malbec joven) o un espumante brut nature.\n\nTip: si tenés tomillo fresco, espolvoreá unas hojas por encima. Le da un perfume herbal que eleva todo el plato.',
+    imagen_url: ''
+  },
+  {
+    titulo: 'Conserva de ajos para asados',
+    categoria: 'Receta',
+    extracto: 'El secreto silencioso del asador. Ajos confitados que perfuman la carne sin abrumar.',
+    contenido: 'Antes de poner la carne al fuego, untá la pieza con dos o tres dientes de nuestra Conserva de Ajos aplastados con un tenedor. El aceite de oliva con hierbas penetra en la carne y la deja infinitamente jugosa.\n\nIdeal para vacío, bife de chorizo o un costillar al asador. También funciona perfecto con pollo, pescados blancos y vegetales grillados.\n\nUna vez listo, no tires el aceite del frasco: úsalo para saltear papas o como base para una vinagreta. No se desperdicia nada.',
+    imagen_url: ''
+  },
+  {
+    titulo: 'Tabla de quesos otoñal',
+    categoria: 'Tip',
+    extracto: 'Cómo armar una picada que sorprenda con tres conservas y los quesos justos.',
+    contenido: 'La regla de oro: tres quesos, tres conservas, tres acompañamientos.\n\nQuesos: uno blando (brie o camembert), uno semiduro (gruyère o reggianito) y uno azul (roquefort suave).\n\nConservas: nuestra Mermelada de Higos para los azules, la Conserva de Ajos para los semiduros, y un dulce de membrillo para el resto.\n\nAcompañamientos: nueces tostadas, uvas frescas y panes con semillas. Servir todo a temperatura ambiente, nunca recién sacado de la heladera.',
+    imagen_url: ''
+  }
+];
 
 async function loadProducts() {
   try {
@@ -1674,6 +1944,129 @@ function createFichaHTML(p, index) {
 }
 
 loadProducts();
+loadRecetas();
+
+// ── RECETARIO ──
+async function loadRecetas() {
+  const grid = document.getElementById('recetas-grid');
+  let recetas = [];
+  if (RECETAS_CSV_URL) {
+    try {
+      const response = await fetch(RECETAS_CSV_URL);
+      if (response.ok) {
+        const csvText = await response.text();
+        recetas = parseRecetasCSV(csvText);
+      }
+    } catch (err) {
+      console.error('Error cargando recetas:', err);
+    }
+  }
+  if (recetas.length === 0) recetas = RECETAS_FALLBACK;
+  renderRecetas(recetas);
+}
+
+function parseRecetasCSV(csv) {
+  const normalized = csv.replace(/^﻿/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+  const allRows = parseCSVRows(normalized);
+  let headerIdx = -1;
+  for (let i = 0; i < allRows.length; i++) {
+    const first = (allRows[i][0] || '').toLowerCase().trim();
+    if (first === 'titulo' || first === 'título') { headerIdx = i; break; }
+  }
+  if (headerIdx === -1) return [];
+  const headers = allRows[headerIdx].map(h => h.toLowerCase().trim());
+  const recetas = [];
+  for (let i = headerIdx + 1; i < allRows.length; i++) {
+    const values = allRows[i];
+    if (!values || values.every(v => !v || !v.trim())) continue;
+    const r = {};
+    headers.forEach((h, idx) => { r[h] = values[idx] !== undefined ? values[idx] : ''; });
+    const titulo = (r.titulo || r['título'] || '').trim();
+    if (!titulo) continue;
+    if (/^titulo|^título|título del/i.test(titulo)) continue;
+    if (titulo.startsWith('(') || titulo.includes('(ej:')) continue;
+    const visibleVal = (r.visible || '').toString().toUpperCase().trim();
+    if (['NO', 'FALSE', '0', 'OCULTO'].includes(visibleVal)) continue;
+    recetas.push({
+      titulo,
+      categoria: r.categoria || r['categoría'] || 'Tip',
+      extracto: r.extracto || r.descripcion || r['descripción'] || '',
+      contenido: r.contenido || r.texto || '',
+      imagen_url: r.imagen_url || r.imagen || ''
+    });
+  }
+  return recetas;
+}
+
+function renderRecetas(recetas) {
+  const grid = document.getElementById('recetas-grid');
+  if (recetas.length === 0) {
+    grid.innerHTML = '<div class="loading">Próximamente: nuestro recetario y maridajes.</div>';
+    return;
+  }
+  grid.innerHTML = recetas.map((r, i) => {
+    const imgURL = driveToDirectURL(r.imagen_url);
+    const inicial = r.titulo.charAt(0).toUpperCase();
+    const visual = imgURL
+      ? `<img src="${esc(imgURL)}" alt="${esc(r.titulo)}" loading="lazy"
+            onerror="this.style.display='none';this.nextElementSibling.style.removeProperty('display')">
+         <div class="receta-imagen-fallback" style="display:none">${esc(inicial)}</div>`
+      : `<div class="receta-imagen-fallback">${esc(inicial)}</div>`;
+    return `
+      <article class="receta-card fade-up" data-receta-idx="${i}">
+        <div class="receta-imagen">${visual}</div>
+        <div class="receta-content">
+          <div class="receta-categoria">${esc(r.categoria)}</div>
+          <h3 class="receta-titulo">${esc(r.titulo)}</h3>
+          <p class="receta-extracto">${esc(r.extracto)}</p>
+          <span class="receta-leer-mas">Leer más</span>
+        </div>
+      </article>`;
+  }).join('');
+  document.querySelectorAll('.receta-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const idx = parseInt(card.dataset.recetaIdx);
+      openRecetaModal(recetas[idx]);
+    });
+  });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+}
+
+const recetaModal = document.getElementById('receta-modal');
+const recetaModalContent = document.getElementById('receta-modal-content');
+const recetaModalClose = document.getElementById('receta-modal-close');
+
+function openRecetaModal(r) {
+  const imgURL = driveToDirectURL(r.imagen_url);
+  const inicial = r.titulo.charAt(0).toUpperCase();
+  const visual = imgURL
+    ? `<img class="receta-modal-img" src="${esc(imgURL)}" alt="${esc(r.titulo)}"
+         onerror="this.outerHTML='<div class=&quot;receta-modal-img-fallback&quot;>${esc(inicial)}</div>'">`
+    : `<div class="receta-modal-img-fallback">${esc(inicial)}</div>`;
+  const parrafos = (r.contenido || '').split('\n').filter(p => p.trim()).map(p => `<p>${esc(p)}</p>`).join('');
+  recetaModalContent.innerHTML = `
+    <button class="receta-modal-close" id="receta-modal-close" aria-label="Cerrar">&times;</button>
+    ${visual}
+    <div class="receta-modal-body">
+      <div class="receta-modal-cat">${esc(r.categoria)}</div>
+      <h2 class="receta-modal-title">${esc(r.titulo)}</h2>
+      <div class="receta-modal-text">${parrafos}</div>
+    </div>`;
+  recetaModalContent.querySelector('#receta-modal-close').addEventListener('click', closeRecetaModal);
+  recetaModal.classList.add('open');
+  recetaModal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeRecetaModal() {
+  recetaModal.classList.remove('open');
+  recetaModal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+recetaModal.addEventListener('click', (e) => {
+  if (e.target === recetaModal) closeRecetaModal();
+});
 
 // ── CARRITO ──
 const CART_KEY = 'arteEnConservaCart';
@@ -1864,6 +2257,7 @@ lightbox.addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => {
   if (e.key !== 'Escape') return;
   if (lightbox.classList.contains('open')) { closeLightbox(); return; }
+  if (recetaModal.classList.contains('open')) { closeRecetaModal(); return; }
   if (cartDrawer.classList.contains('open')) closeCart();
 });
 
