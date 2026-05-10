@@ -791,6 +791,9 @@
     color: var(--marron);
     font-style: italic;
   }
+
+  .stock-disponible { color: var(--verde-dark); font-weight: 700; }
+  .stock-agotado { color: var(--marron); font-weight: 700; }
 </style>
 </head>
 <body>
@@ -1046,9 +1049,14 @@ function createFichaHTML(p, index) {
   const reverseClass = index % 2 === 1 ? 'reverse' : '';
 
   // stock vacío o ausente = disponible; stock = "0" = agotado
-  const stockNum = p.stock !== undefined && p.stock !== '' ? parseInt(p.stock) : 1;
-  const disponible = isNaN(stockNum) || stockNum > 0;
-  const badge = disponible ? 'Disponible' : 'Temporada limitada';
+  const stockNum = p.stock !== undefined && p.stock !== '' ? parseInt(p.stock) : null;
+  const disponible = stockNum === null || isNaN(stockNum) || stockNum > 0;
+  const stockLabel = stockNum === null || isNaN(stockNum)
+    ? 'Disponible'
+    : stockNum === 0
+      ? 'Sin stock'
+      : `${stockNum} unidad${stockNum === 1 ? '' : 'es'} disponible${stockNum === 1 ? '' : 's'}`;
+  const badge = disponible ? 'Disponible' : 'Sin stock';
   const badgeClass = disponible ? '' : 'badge-agotado';
 
   // Compatibilidad: acepta columnas con o sin tilde (categoria/categoría, descripcion/descripción)
@@ -1107,6 +1115,10 @@ function createFichaHTML(p, index) {
             <div class="spec-row">
               <span class="spec-label">Envase</span>
               <span class="spec-value">Frasco de vidrio, sellado al vacío</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Stock</span>
+              <span class="spec-value ${disponible ? 'stock-disponible' : 'stock-agotado'}">${stockLabel}</span>
             </div>
           </div>
           <div class="ficha-atributos">
