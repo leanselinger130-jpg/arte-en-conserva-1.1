@@ -1247,51 +1247,67 @@ async function loadProducts() {
   }
 }
 
-// Parser CSV completo: respeta campos entre comillas (RFC 4180)
-function parseCSVLine(line) {
-  const result = [];
+// Tokeniza CSV completo, respetando saltos de linea dentro de campos entre comillas (RFC 4180)
+function parseCSVRows(csv) {
+  const rows = [];
+  let row = [];
   let current = '';
   let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
+  for (let i = 0; i < csv.length; i++) {
+    const ch = csv[i];
     if (ch === '"') {
-      if (inQuotes && line[i + 1] === '"') { current += '"'; i++; }
+      if (inQuotes && csv[i + 1] === '"') { current += '"'; i++; }
       else inQuotes = !inQuotes;
     } else if (ch === ',' && !inQuotes) {
-      result.push(current.trim());
+      row.push(current.trim());
+      current = '';
+    } else if (ch === '\n' && !inQuotes) {
+      row.push(current.trim());
+      rows.push(row);
+      row = [];
       current = '';
     } else {
       current += ch;
     }
   }
-  result.push(current.trim());
-  return result;
+  if (current !== '' || row.length > 0) {
+    row.push(current.trim());
+    rows.push(row);
+  }
+  return rows;
 }
 
 function parseCSV(csv) {
-  // Normalizar saltos de línea (\r\n y \r → \n) y quitar BOM
   const normalized = csv.replace(/^﻿/, '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-  const lines = normalized.trim().split('\n');
-  const headers = parseCSVLine(lines[0]).map(h => h.trim());
+  const allRows = parseCSVRows(normalized);
+
+  // Buscar la fila de headers: la primera que tenga 'nombre' como primer campo
+  let headerIdx = -1;
+  for (let i = 0; i < allRows.length; i++) {
+    const first = (allRows[i][0] || '').toLowerCase().trim();
+    if (first === 'nombre') { headerIdx = i; break; }
+  }
+  if (headerIdx === -1) return [];
+
+  const headers = allRows[headerIdx].map(h => h.toLowerCase().trim());
 
   const productos = [];
-  for (let i = 1; i < lines.length; i++) {
-    if (!lines[i].trim()) continue;
-    const values = parseCSVLine(lines[i]);
+  for (let i = headerIdx + 1; i < allRows.length; i++) {
+    const values = allRows[i];
+    if (!values || values.every(v => !v || !v.trim())) continue;
     const p = {};
     headers.forEach((h, idx) => {
       p[h] = values[idx] !== undefined ? values[idx] : '';
     });
-    // normalizar claves a minúsculas para tolerar variaciones del header
-    const pNorm = {};
-    Object.keys(p).forEach(k => { pNorm[k.toLowerCase().trim()] = p[k]; });
-    Object.assign(p, pNorm);
-    // Por defecto visible, salvo que la columna 'visible' diga NO/FALSE/0
+    // Saltear filas de ejemplo/template (las que tienen "(ej:" o paréntesis indicativos en nombre)
+    const nombre = (p.nombre || '').trim();
+    if (!nombre) continue;
+    if (/^nombre del producto/i.test(nombre)) continue;
+    if (nombre.startsWith('(') || nombre.includes('(ej:')) continue;
+
     const visibleVal = (p.visible || '').toString().toUpperCase().trim();
     const oculto = ['NO', 'FALSE', '0', 'OCULTO'].includes(visibleVal);
-    if (p.nombre && !oculto) {
-      productos.push(p);
-    }
+    if (!oculto) productos.push(p);
   }
   return productos;
 }
